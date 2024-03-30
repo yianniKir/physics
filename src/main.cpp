@@ -97,8 +97,7 @@ class Object
         };
 
         void update(float dt){
-            if((acceleration.x == 0.0f && acceleration.y == 0.0f)){
-                std::cout << "dfhsah" << std::endl;
+            if(!(acceleration == glm::vec2(0.0f))){
                 velocity += acceleration * dt;
             }
                 
@@ -148,8 +147,8 @@ int main(int argc, char *argv[])
     Sprite square(shader);
 
     Object obj(square, glm::vec2(-80,80),DEFAULTSIZE, glm::vec3(0.0f,1.0f,0.0f));
-    //obj.acceleration.y = -9.81f;
-    obj.velocity = glm::vec2(5.0f,0.0f);
+    obj.acceleration.y = -9.81f;
+    obj.velocity = glm::vec2(15.0f,0.0f);
 
 
     // deltaTime variables
