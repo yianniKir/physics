@@ -1,116 +1,13 @@
-#include "vendors/glad/glad.h"
-#include "vendors/GLFW/glfw3.h"
-#include "vendors/glm/glm.hpp"
-#include "vendors/glm/gtc/matrix_transform.hpp"
-#include "vendors/glm/gtc/type_ptr.hpp"
+#include "physics.h"
 
-#include <iostream>
+
 #include "shader.h"
+#include "sprite.h"
+#include "object.h"
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-
-// The Width of the screen
-const unsigned int SCREEN_WIDTH = 800;
-// The height of the screen
-const unsigned int SCREEN_HEIGHT = 800;
-
-const unsigned int pixPerMeter = 10;
-
-const unsigned int SCRADJUST = SCREEN_WIDTH / pixPerMeter;
-
-
-glm::vec2 DEFAULTSIZE(0.1f,0.1f);
-
-
-class Sprite{
-    public:
-        Sprite(Shader &shader) : shader(shader){
-            
-            initRenderData();
-        }
-        
-uint VAO;
-        void drawSprite(glm::vec2 position, glm::vec2 size, float rotate, glm::vec3 color){
-            shader.use();
-
-            glm::mat4 model = glm::mat4(1.0f);
-
-            model = glm::translate(model, glm::vec3(position, 0.0f));
-            model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0, 0.0, 1.0));
-            model = glm::scale(model, glm::vec3(size, 1.0f));
-            shader.setMat4("model", model);
-            shader.setVec3("spriteColor", color);
-
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-
-        }
-
-    private:
-
-        
-        Shader shader;
-
-        void initRenderData(){
-            // configure VAO/VBO
-            unsigned int VBO;
-            float vertices[] = { 
-                -0.5f,0.5f,
-                -0.5f,-0.5f,
-                0.5f, -0.5f,
-
-                0.5f,-0.5f,
-                0.5f,0.5f,
-                -0.5f,0.5f
-            };
-
-            glGenVertexArrays(1, &VAO);
-            glGenBuffers(1, &VBO);
-
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-            glBindVertexArray(VAO);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }    
-};
-
-
-class Object
-{
-    public:
-        glm::vec2   position, size, velocity, acceleration;
-        glm::vec3   color;
-        float       rotation;
-
-        
-
-        Object(Sprite &sprite): sprite(sprite) {};
-        Object(Sprite &sprite, glm::vec2 position, glm::vec2 size, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f, 0.0f), glm::vec2 acceleration = glm::vec2(0.0f,0.0f)) : sprite(sprite), position(position), size(size), color(color), velocity(velocity){
-            rotation = 0.0f;
-        };
-
-        void update(float dt){
-            if(!(acceleration == glm::vec2(0.0f))){
-                velocity += acceleration * dt;
-            }
-                
-            position += velocity * dt;
-        }
-    
-
-        void draw(){
-            sprite.drawSprite(glm::vec2(position.x/SCRADJUST, position.y/SCRADJUST), size, rotation, color);
-        }
-    private:
-        Sprite sprite;
-};
 
 int main(int argc, char *argv[])
 {
