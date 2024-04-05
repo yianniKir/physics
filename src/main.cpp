@@ -6,10 +6,14 @@
 #include "object.h"
 
 glm::vec2 DEFAULTSIZE(0.1f,0.1f);
+double cursorXPos = 0.0;
+double cursorYPos = 0.0;
+bool spawnObj = false;
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +38,7 @@ int main(int argc, char *argv[])
     }
 
     glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
@@ -45,11 +50,13 @@ int main(int argc, char *argv[])
     Shader shader("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
     Sprite square(shader);
 
-    Object obj(square, glm::vec2(-80,80),DEFAULTSIZE, glm::vec3(0.0f,1.0f,0.0f));
+    Object obj(square, glm::vec2(-80,80),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f));
     obj.particle.acceleration.y = -9.81f;
     obj.particle.velocity = glm::vec2(15.0f,0.0f);
 
+   std::vector<Object> objs;
 
+   
     // deltaTime variables
     // -------------------
     float deltaTime = 0.0f;
@@ -68,17 +75,22 @@ int main(int argc, char *argv[])
         
         // manage user input
         // -----------------
-        
-
-        obj.update(deltaTime);
+        if(spawnObj){
+            spawnObj = false;
+            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, -9.81f)));
+            
+        }
 
         // render
         // ------
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        obj.particle.integrate(deltaTime);
         
-        obj.draw();
+        for (auto it = objs.begin(); it != objs.end(); ++it) {
+            (*it).particle.integrate(deltaTime);
+            (*it).color.g = (*it).particle.posNDC().g;
+            (*it).draw();
+        }
         
         glfwSwapBuffers(window);
     }
@@ -103,4 +115,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+
+    //ndc
+    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) 
+    {
+       double xpos, ypos;
+       //getting cursor position
+       glfwGetCursorPos(window, &cursorXPos, &cursorYPos);
+       cursorXPos = cursorXPos / SCREEN_WIDTH * 2 -1;
+       cursorYPos = cursorYPos / SCREEN_HEIGHT * 2 - 1;
+       spawnObj = true;
+    }
 }

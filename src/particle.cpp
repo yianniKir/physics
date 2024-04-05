@@ -14,7 +14,7 @@ void Particle::integrate(float duration){
     //Update linear position
     //position = position + velocity * duration
     position = position + velocity * duration;
-
+    
     //work out the acceleration from the force
     //(used for generating forces later)
 
