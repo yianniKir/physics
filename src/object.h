@@ -3,32 +3,42 @@
 
 #include "physics.h"
 
+#include "particle.h"
+
 #include "sprite.h"
 class Object
 {
     public:
-        glm::vec2   position, size, velocity, acceleration;
-        glm::vec3   color;
-        float       rotation;
+        Particle particle;
+        glm::vec2 size;
+        glm::vec3 color;
+        float rotation;
 
         
-
+//, position(position), size(size), color(color), velocity(velocity)
         Object(Sprite &sprite): sprite(sprite) {};
-        Object(Sprite &sprite, glm::vec2 position, glm::vec2 size, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f, 0.0f), glm::vec2 acceleration = glm::vec2(0.0f,0.0f)) : sprite(sprite), position(position), size(size), color(color), velocity(velocity){
+        Object(Sprite &sprite, glm::vec2 position, glm::vec2 size, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f, 0.0f), glm::vec2 acceleration = glm::vec2(0.0f,0.0f)) : sprite(sprite), size(size){
+            particle.position = position;
+            particle.velocity = velocity;
+            particle.acceleration = acceleration;
+
             rotation = 0.0f;
+
+            particle.inverseMass = 1.0f;
         };
 
         void update(float dt){
-            if(!(acceleration == glm::vec2(0.0f))){
-                velocity += acceleration * dt;
+            if(!(particle.acceleration == glm::vec2(0.0f))){
+                particle.velocity += particle.acceleration * dt;
             }
                 
-            position += velocity * dt;
+            particle.position += particle.velocity * dt;
         }
     
 
         void draw(){
-            sprite.drawSprite(glm::vec2(position.x/SCRADJUST, position.y/SCRADJUST), size, rotation, color);
+            sprite.drawSprite(particle.posNDC(), size, rotation, color);
+
         }
     private:
         Sprite sprite;

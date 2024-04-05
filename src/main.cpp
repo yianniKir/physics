@@ -5,6 +5,8 @@
 #include "sprite.h"
 #include "object.h"
 
+glm::vec2 DEFAULTSIZE(0.1f,0.1f);
+
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -44,8 +46,8 @@ int main(int argc, char *argv[])
     Sprite square(shader);
 
     Object obj(square, glm::vec2(-80,80),DEFAULTSIZE, glm::vec3(0.0f,1.0f,0.0f));
-    obj.acceleration.y = -9.81f;
-    obj.velocity = glm::vec2(15.0f,0.0f);
+    obj.particle.acceleration.y = -9.81f;
+    obj.particle.velocity = glm::vec2(15.0f,0.0f);
 
 
     // deltaTime variables
@@ -74,9 +76,10 @@ int main(int argc, char *argv[])
         // ------
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
+        obj.particle.integrate(deltaTime);
+        
         obj.draw();
-
+        
         glfwSwapBuffers(window);
     }
 

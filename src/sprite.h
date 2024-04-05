@@ -24,6 +24,8 @@ class Sprite{
             shader.setMat4("model", model);
             shader.setVec3("spriteColor", color);
 
+
+            
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glBindVertexArray(0);

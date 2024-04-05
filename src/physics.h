@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#define DEBUG std::cout << "DEBUG" << std::endl;
+
 // The Width of the screen
 const unsigned int SCREEN_WIDTH = 800;
 // The height of the screen
@@ -18,6 +20,5 @@ const unsigned int pixPerMeter = 10;
 
 const unsigned int SCRADJUST = SCREEN_WIDTH / pixPerMeter;
 
-glm::vec2 DEFAULTSIZE(0.1f,0.1f);
 
 #endif
