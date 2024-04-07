@@ -63,9 +63,13 @@ int main(int argc, char *argv[])
     Shader shader("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
     Sprite square(shader);
 
-   std::vector<Object> objs;
+    Object floor(square, glm::vec2(0.0f, -80.0f),glm::vec2(80.0f,0.2f), glm::vec3(1.0f,1.0f,1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
+    floor.setDestroy(false);
+    floor.lock();
 
-   
+    std::vector<Object> objs;
+
+   objs.push_back(floor);
     // deltaTime variables
     // -------------------
     float deltaTime = 0.0f;
@@ -92,10 +96,10 @@ int main(int argc, char *argv[])
 
         }
 
-        if(wkey){
+        /*if(wkey){
             wkey = false;
             objs[d-1].particle.addForce(glm::vec2(0.0f, 5000.0f));
-        }
+        }*/
 
 
         std::vector<uint> indicesToRemove;
@@ -109,8 +113,10 @@ int main(int argc, char *argv[])
         for (uint i = 0; i < objs.size(); ++i) {
             for (uint j = i + 1; j < objs.size(); ++j) {
                 if (checkCollision(objs[i], objs[j])) {
-                    indicesToRemove.push_back(i);
-                    indicesToRemove.push_back(j);
+                    if(objs[i].isDestroyable())
+                        indicesToRemove.push_back(i);
+                    if(objs[j].isDestroyable())
+                        indicesToRemove.push_back(j);
                 }
             }
         }
@@ -122,10 +128,9 @@ int main(int argc, char *argv[])
         }
         
         for (auto it = objs.begin(); it != objs.end(); ++it) {
-            //(*it).particle.addForce(glm::vec2(0.0f,-49.0f));
-            (*it).particle.integrate(deltaTime);
-            
-            //std::cout << (*it).particle.acceleration.y << std::endl;
+            if(!(*it).isLocked()){
+                (*it).particle.integrate(deltaTime);
+            }
             (*it).draw();
             
         }

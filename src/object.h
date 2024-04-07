@@ -21,7 +21,7 @@ class Object
             particle.acceleration = acceleration;
 
             rotation = 0.0f;
-
+            destroyable = true;
             particle.mass = 5.0f;
         };
     
@@ -29,7 +29,30 @@ class Object
         void draw(){
             sprite.drawSprite(particle.posNDC(), size, rotation, color);
         }
+
+        void setDestroy(bool b){
+            destroyable = b;
+        }
+
+        bool isDestroyable(){
+            return destroyable;
+        }
+
+        void lock(){
+            lockk = true;
+        }
+
+        void unlock(){
+            lockk = false;
+        }
+
+        bool isLocked(){
+            return lockk;
+        }
+
     private:
+        bool lockk;
+        bool destroyable;
         Sprite sprite;
 };
 
