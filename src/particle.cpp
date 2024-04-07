@@ -2,12 +2,6 @@
 #include "particle.h"
 
 void Particle::integrate(float duration){
-    
-    if (inverseMass <= 0.0f){
-    
-        return;
-
-    }
 
     //assert(duration > 0.0);
 
@@ -19,18 +13,25 @@ void Particle::integrate(float duration){
     //(used for generating forces later)
 
     glm::vec2 resultingAccel = acceleration;
-
+    resultingAccel = resultingAccel + forceAccum/ mass;
     //update linear velocity
     //velocity = velocity + acceleration * duration
-    velocity = velocity + acceleration * duration;
+    velocity = velocity + resultingAccel * duration;
 
-    //damping?
-    //velocity = velocity* damping^duration
-    //velocity *= real_pow(damping, duration);
-
+    clearAccumulator();
+    
    // clearAccumulator();
+}
+
+void Particle::clearAccumulator(){
+    forceAccum.x = 0.0f;
+    forceAccum.y = 0.0f;
 }
 
 glm::vec2 Particle::posNDC(){
     return glm::vec2(position.x/SCRADJUST, position.y/SCRADJUST);
+}
+
+void Particle::addForce(const glm::vec2 &force){
+    forceAccum += force;
 }

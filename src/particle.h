@@ -14,11 +14,19 @@ class Particle{
 
         float damping;
 
-        float inverseMass;
+        float mass;
 
         void integrate(float duration);
 
         glm::vec2 posNDC();
+
+
+        //Mass-aggregate
+
+        glm::vec2 forceAccum = glm::vec2(0.0f,0.0f);
+        void clearAccumulator();
+
+        void addForce(const glm::vec2 &force);
 
 };
 

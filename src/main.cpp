@@ -9,6 +9,7 @@ glm::vec2 DEFAULTSIZE(0.1f,0.1f);
 double cursorXPos = 0.0;
 double cursorYPos = 0.0;
 bool spawnObj = false;
+bool wkey =false;
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
     // -------------------
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-
+    int d = 0;
     while (!glfwWindowShouldClose(window))
     {
         // calculate delta time
@@ -85,7 +86,15 @@ int main(int argc, char *argv[])
         // -----------------
         if(spawnObj){
             spawnObj = false;
-            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, -9.81f)));
+            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
+            //objs[d].particle.acceleration.y = -9.81f;
+            d++;
+
+        }
+
+        if(wkey){
+            wkey = false;
+            objs[d-1].particle.addForce(glm::vec2(0.0f, 5000.0f));
         }
 
 
@@ -95,6 +104,8 @@ int main(int argc, char *argv[])
         // ------
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        
         for (uint i = 0; i < objs.size(); ++i) {
             for (uint j = i + 1; j < objs.size(); ++j) {
                 if (checkCollision(objs[i], objs[j])) {
@@ -109,9 +120,12 @@ int main(int argc, char *argv[])
         for (auto it = indicesToRemove.rbegin(); it != indicesToRemove.rend(); ++it) {
             objs.erase(objs.begin() + *it); // Erase objects from the vector
         }
-
+        
         for (auto it = objs.begin(); it != objs.end(); ++it) {
+            (*it).particle.addForce(glm::vec2(0.0f,-49.0f));
             (*it).particle.integrate(deltaTime);
+            
+            //std::cout << (*it).particle.acceleration.y << std::endl;
             (*it).draw();
             
         }
@@ -131,6 +145,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     // when a user presses the escape key, we set the WindowShouldClose property to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if(key == GLFW_KEY_W && action == GLFW_PRESS)
+        wkey = true;
 
 }
 

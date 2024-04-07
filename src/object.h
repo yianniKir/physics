@@ -22,18 +22,15 @@ class Object
 
             rotation = 0.0f;
 
-            particle.inverseMass = 1.0f;
-            destroyed = false;
+            particle.mass = 5.0f;
         };
     
 
         void draw(){
             sprite.drawSprite(particle.posNDC(), size, rotation, color);
-
         }
     private:
         Sprite sprite;
-        bool destroyed;
 };
 
 #endif
