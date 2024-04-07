@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
         }
         
         for (auto it = objs.begin(); it != objs.end(); ++it) {
-            (*it).particle.addForce(glm::vec2(0.0f,-49.0f));
+            //(*it).particle.addForce(glm::vec2(0.0f,-49.0f));
             (*it).particle.integrate(deltaTime);
             
             //std::cout << (*it).particle.acceleration.y << std::endl;
