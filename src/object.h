@@ -31,10 +31,6 @@ class Object
             sprite.drawSprite(particle.posNDC(), size, rotation, color);
 
         }
-
-        void destroy(){
-            destroyed = true;
-        }
     private:
         Sprite sprite;
         bool destroyed;

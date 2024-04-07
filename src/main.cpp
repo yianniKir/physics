@@ -15,6 +15,18 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
+bool checkCollision(Object &obj1, Object &obj2){
+    //position is in center
+    glm::vec2 obj1Pos = obj1.particle.posNDC();
+    glm::vec2 obj2Pos = obj2.particle.posNDC();
+
+    bool colX = obj1Pos.x + obj1.size.x >= obj2Pos.x && obj2Pos.x + obj2.size.x >= obj1Pos.x;
+    bool colY = obj1Pos.y + obj1.size.y >= obj2Pos.y && obj2Pos.y + obj2.size.y >= obj1Pos.y;
+
+    return colX && colY;
+
+}   
+
 int main(int argc, char *argv[])
 {
     glfwInit();
@@ -50,10 +62,6 @@ int main(int argc, char *argv[])
     Shader shader("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
     Sprite square(shader);
 
-    Object obj(square, glm::vec2(-80,80),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f));
-    obj.particle.acceleration.y = -9.81f;
-    obj.particle.velocity = glm::vec2(15.0f,0.0f);
-
    std::vector<Object> objs;
 
    
@@ -70,7 +78,7 @@ int main(int argc, char *argv[])
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
         glfwPollEvents();
-
+        
 
         
         // manage user input
@@ -78,20 +86,36 @@ int main(int argc, char *argv[])
         if(spawnObj){
             spawnObj = false;
             objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, -9.81f)));
-            
         }
+
+
+        std::vector<uint> indicesToRemove;
 
         // render
         // ------
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        
+        for (uint i = 0; i < objs.size(); ++i) {
+            for (uint j = i + 1; j < objs.size(); ++j) {
+                if (checkCollision(objs[i], objs[j])) {
+                    indicesToRemove.push_back(i);
+                    indicesToRemove.push_back(j);
+                }
+            }
+        }
+
+        std::sort(indicesToRemove.begin(), indicesToRemove.end()); // Sort indices
+        indicesToRemove.erase(std::unique(indicesToRemove.begin(), indicesToRemove.end()), indicesToRemove.end()); // Remove duplicates
+        for (auto it = indicesToRemove.rbegin(); it != indicesToRemove.rend(); ++it) {
+            objs.erase(objs.begin() + *it); // Erase objects from the vector
+        }
+
         for (auto it = objs.begin(); it != objs.end(); ++it) {
             (*it).particle.integrate(deltaTime);
-            (*it).color.g = (*it).particle.posNDC().g;
             (*it).draw();
+            
         }
-        
+       
         glfwSwapBuffers(window);
     }
 

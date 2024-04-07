@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #define DEBUG std::cout << "DEBUG" << std::endl;
 

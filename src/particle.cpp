@@ -2,7 +2,7 @@
 #include "particle.h"
 
 void Particle::integrate(float duration){
-
+    
     if (inverseMass <= 0.0f){
     
         return;
