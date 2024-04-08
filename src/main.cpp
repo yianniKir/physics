@@ -67,17 +67,17 @@ int main(int argc, char *argv[])
 
     //wtf idk what going on here ;/
     Object floor(square, glm::vec2(-80.0f, -70.0f),glm::vec2(4.0f,0.1f), glm::vec3(1.0f,1.0f,1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
-    floor.setDestroy(false);
-    floor.lock();
+    floor.Lock();
+    floor.SetDestroyable(false);
 
     std::vector<Object> objs;
 
-   objs.push_back(floor);
-    // deltaTime variables
+     objs.push_back(floor);
+    // deltaTime variableseeee
     // -------------------
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
-    int d = 0;
+
     while (!glfwWindowShouldClose(window))
     {
         // calculate delta time
@@ -93,17 +93,8 @@ int main(int argc, char *argv[])
         // -----------------
         if(spawnObj){
             spawnObj = false;
-            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f)));
-            //objs[d].particle.acceleration.y = -9.81f;
-            d++;
-
+            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, -9.81f)));
         }
-
-        /*if(wkey){
-            wkey = false;
-            objs[d-1].particle.addForce(glm::vec2(0.0f, 5000.0f));
-        }*/
-
 
         std::vector<uint> indicesToRemove;
 
@@ -116,9 +107,9 @@ int main(int argc, char *argv[])
         for (uint i = 0; i < objs.size(); ++i) {
             for (uint j = i + 1; j < objs.size(); ++j) {
                 if (checkCollision(objs[i], objs[j])) {
-                    if(objs[i].isDestroyable())
+                    if(objs[i].IsDestroyed())
                         indicesToRemove.push_back(i);
-                    if(objs[j].isDestroyable())
+                    if(objs[j].IsDestroyed())
                         indicesToRemove.push_back(j);
                 }
             }
@@ -131,10 +122,10 @@ int main(int argc, char *argv[])
         }
         
         for (auto it = objs.begin(); it != objs.end(); ++it) {
-            if(!(*it).isLocked()){
+            if(!(*it).IsLocked()){
                 (*it).integrate(deltaTime);
             }
-            (*it).draw();
+            (*it).Draw();
             
         }
        

@@ -26,33 +26,15 @@ class Object : public Particle
             damping = 0.99999f;
         };
     
-
-        void draw(){
-            sprite.drawSprite(posNDC(), size, rotation, color);
-        }
-
-        void setDestroy(bool b){
-            destroyable = b;
-        }
-
-        bool isDestroyable(){
-            return destroyable;
-        }
-
-        void lock(){
-            lockk = true;
-        }
-
-        void unlock(){
-            lockk = false;
-        }
-
-        bool isLocked(){
-            return lockk;
-        }
+        void Draw();
+        void SetDestroyable(bool b);
+        bool IsDestroyed();
+        void Lock();
+        void Unlock();
+        bool IsLocked();
 
     private:
-        bool lockk;
+        bool m_lock;
         bool destroyable;
         Sprite sprite;
 };
