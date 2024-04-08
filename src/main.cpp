@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "sprite.h"
 #include "object.h"
+#include "pfgen.h"
 
 glm::vec2 DEFAULTSIZE(0.1f,0.1f);
 double cursorXPos = 0.0;
@@ -23,7 +24,8 @@ bool checkCollision(Object &obj1, Object &obj2){
 
     bool colX = obj1Pos.x + obj1.size.x >= obj2Pos.x && obj2Pos.x + obj2.size.x >= obj1Pos.x;
     bool colY = obj1Pos.y + obj1.size.y >= obj2Pos.y && obj2Pos.y + obj2.size.y >= obj1Pos.y;
-
+    //if (point.x >= aabb.x && point.x < aabb.x + aabb.width && point.y >= aabb.y && point.y < aabb.y + aabb.width)
+    
     return colX && colY;
 
 }   
@@ -63,7 +65,8 @@ int main(int argc, char *argv[])
     Shader shader("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
     Sprite square(shader);
 
-    Object floor(square, glm::vec2(0.0f, -80.0f),glm::vec2(80.0f,0.2f), glm::vec3(1.0f,1.0f,1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
+    //wtf idk what going on here ;/
+    Object floor(square, glm::vec2(-80.0f, -70.0f),glm::vec2(4.0f,0.1f), glm::vec3(1.0f,1.0f,1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
     floor.setDestroy(false);
     floor.lock();
 
@@ -173,6 +176,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
        glfwGetCursorPos(window, &cursorXPos, &cursorYPos);
        cursorXPos = cursorXPos / SCREEN_WIDTH * 2 -1;
        cursorYPos = cursorYPos / SCREEN_HEIGHT * 2 - 1;
+       //std::cout << '(' << cursorXPos << ',' << cursorYPos << ')' << std::endl;
        spawnObj = true;
     }
 }

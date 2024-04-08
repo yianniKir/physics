@@ -20,7 +20,6 @@ class Particle{
 
         glm::vec2 posNDC();
 
-
         //Mass-aggregate
 
         glm::vec2 forceAccum = glm::vec2(0.0f,0.0f);

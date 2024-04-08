@@ -23,6 +23,7 @@ class Object
             rotation = 0.0f;
             destroyable = true;
             particle.mass = 5.0f;
+            particle.damping = 0.99999f;
         };
     
 
