@@ -19,8 +19,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 bool checkCollision(Object &obj1, Object &obj2){
     //position is in center
-    glm::vec2 obj1Pos = obj1.particle.posNDC();
-    glm::vec2 obj2Pos = obj2.particle.posNDC();
+    glm::vec2 obj1Pos = obj1.posNDC();
+    glm::vec2 obj2Pos = obj2.posNDC();
 
     bool colX = obj1Pos.x + obj1.size.x >= obj2Pos.x && obj2Pos.x + obj2.size.x >= obj1Pos.x;
     bool colY = obj1Pos.y + obj1.size.y >= obj2Pos.y && obj2Pos.y + obj2.size.y >= obj1Pos.y;
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
         
         for (auto it = objs.begin(); it != objs.end(); ++it) {
             if(!(*it).isLocked()){
-                (*it).particle.integrate(deltaTime);
+                (*it).integrate(deltaTime);
             }
             (*it).draw();
             

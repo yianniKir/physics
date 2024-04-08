@@ -19,7 +19,7 @@ void Particle::integrate(float duration){
     //update linear velocity
     //velocity = velocity + acceleration * duration
     velocity = velocity + resultingAccel * duration;
-    velocity *= powf(damping, duration);
+    //velocity *= powf(damping, duration);
     clearAccumulator();
     
    // clearAccumulator();
