@@ -37,4 +37,17 @@ class ParticleGravity : public ParticleForceGenerator{
         virtual void updateForce(Particle *particle, float duration);
 };
 
+class ParticleDrag : public ParticleForceGenerator{
+    
+    //velocity drag coefficient
+    float k1;
+    //velocity squared drag coefficient (see book for reason)
+    float k2;
+
+    public:
+        ParticleDrag(float k1, float k2);
+
+        virtual void updateForce(Particle *particle, float duration);
+};
+
 #endif

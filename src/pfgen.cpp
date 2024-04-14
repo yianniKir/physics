@@ -42,3 +42,17 @@ void ParticleForceRegistry::remove(Particle* particle, ParticleForceGenerator* f
 void ParticleForceRegistry::clear(){
     registrations.clear();
 }
+
+void ParticleDrag::updateForce(Particle  *particle, float duration){
+    glm::vec2 force;
+    force = (*particle).velocity; //same as force->
+
+    float dragCoeff = glm::length(force);
+    //formula
+    dragCoeff = k1 * dragCoeff + k2 * dragCoeff * dragCoeff;
+
+    //calculate final foce
+    glm::normalize(force);
+    force = force * -dragCoeff;
+    (*particle).addForce(force);
+}

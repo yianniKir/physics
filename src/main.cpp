@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
     Shader shader("src/shaders/vertexShader.glsl", "src/shaders/fragmentShader.glsl");
     Sprite square(shader);
 
+    
+
     //wtf idk what going on here ;/
     Object floor(square, glm::vec2(-80.0f, -70.0f),glm::vec2(4.0f,0.1f), glm::vec3(1.0f,1.0f,1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
     floor.Lock();
@@ -73,10 +75,15 @@ int main(int argc, char *argv[])
     std::vector<Object> objs;
 
      objs.push_back(floor);
+
+    ParticleForceRegistry pfRegistry;
+    ParticleGravity mainGravity(glm::vec2(0.0f, -9.81f));
+
     // deltaTime variableseeee
     // -------------------
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -93,7 +100,9 @@ int main(int argc, char *argv[])
         // -----------------
         if(spawnObj){
             spawnObj = false;
-            objs.push_back(Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, -9.81f)));
+            Object newObj = Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
+            objs.push_back(newObj);
+            pfRegistry.add(&newObj, &mainGravity);
         }
 
         std::vector<uint> indicesToRemove;
@@ -124,10 +133,11 @@ int main(int argc, char *argv[])
         for (auto it = objs.begin(); it != objs.end(); ++it) {
             if(!(*it).IsLocked()){
                 (*it).integrate(deltaTime);
+                
             }
             (*it).Draw();
-            
         }
+        pfRegistry.updateForces(deltaTime);
        
         glfwSwapBuffers(window);
     }

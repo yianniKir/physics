@@ -13,7 +13,7 @@ void Particle::integrate(float duration){
     //(used for generating forces later)
 
     glm::vec2 resultingAccel = acceleration;
- 
+    
     resultingAccel = resultingAccel + forceAccum/ mass;
     //update linear velocity
     //velocity = velocity + acceleration * duration

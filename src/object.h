@@ -22,7 +22,7 @@ class Object : public Particle
 
             rotation = 0.0f;
             destroyable = true;
-            mass = 5.0f;
+            mass = 10.0f;
             damping = 0.99999f;
         };
     
