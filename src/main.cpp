@@ -130,14 +130,27 @@ int main(int argc, char *argv[])
             objs.erase(objs.begin() + *it); // Erase objects from the vector
         }
         
+        
         for (auto it = objs.begin(); it != objs.end(); ++it) {
             if(!(*it).IsLocked()){
-                (*it).integrate(deltaTime);
                 
+                std::cout << "Object position: " << (*it).position.x << ", " << (*it).position.y << std::endl;
+                std::cout << "Object velocity: " << (*it).velocity.x << ", " << (*it).velocity.y << std::endl;
+
+                // Apply gravity force manually for debugging
+                //glm::vec2 gravityForce = mainGravity.getGravity() * (*it).getMass();
+                std::cout << "Gravity force: " << (*it).forceAccum.x << ", " << (*it).forceAccum.y << std::endl;
+                pfRegistry.updateForces(deltaTime);
+                // Integrate object motion
+                (*it).integrate(deltaTime);
+
+                // Print updated object information
+                std::cout << "Object new position: " << (*it).position.x << ", " << (*it).position.y << std::endl;
+                std::cout << "Object new velocity: " << (*it).velocity.x << ", " << (*it).velocity.y << std::endl;
             }
             (*it).Draw();
         }
-        pfRegistry.updateForces(deltaTime);
+        
        
         glfwSwapBuffers(window);
     }

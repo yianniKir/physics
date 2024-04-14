@@ -25,6 +25,7 @@ void Particle::integrate(float duration){
 }
 
 void Particle::clearAccumulator(){
+    
     forceAccum.x = 0.0f;
     forceAccum.y = 0.0f;
 }
