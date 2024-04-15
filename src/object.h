@@ -7,23 +7,24 @@
 
 #include "sprite.h"
 
-class Object : public Particle
+class Object
 {
     public:
+        Particle particle;
         glm::vec2 size;
         glm::vec3 color;
         float rotation;
 
         Object(Sprite &sprite): sprite(sprite) {};
         Object(Sprite &sprite, glm::vec2 positionVEC, glm::vec2 size, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocityVEC = glm::vec2(0.0f, 0.0f), glm::vec2 accelerationVEC = glm::vec2(0.0f,0.0f)) : sprite(sprite), color(color), size(size){
-            position = positionVEC;
-            velocity = velocityVEC;
-            acceleration = accelerationVEC;
+            particle.position = positionVEC;
+            particle.velocity = velocityVEC;
+            particle.acceleration = accelerationVEC;
 
             rotation = 0.0f;
             destroyable = true;
-            mass = 10.0f;
-            damping = 0.99999f;
+            particle.mass = 10.0f;
+            particle.damping = 0.99999f;
         };
     
         void Draw();

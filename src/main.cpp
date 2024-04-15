@@ -19,8 +19,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 bool checkCollision(Object &obj1, Object &obj2){
     //position is in center
-    glm::vec2 obj1Pos = obj1.posNDC();
-    glm::vec2 obj2Pos = obj2.posNDC();
+    glm::vec2 obj1Pos = obj1.particle.posNDC();
+    glm::vec2 obj2Pos = obj2.particle.posNDC();
 
     bool colX = obj1Pos.x + obj1.size.x >= obj2Pos.x && obj2Pos.x + obj2.size.x >= obj1Pos.x;
     bool colY = obj1Pos.y + obj1.size.y >= obj2Pos.y && obj2Pos.y + obj2.size.y >= obj1Pos.y;
@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
 
     ParticleForceRegistry pfRegistry;
     ParticleGravity mainGravity(glm::vec2(0.0f, -9.81f));
+    
 
     // deltaTime variableseeee
     // -------------------
@@ -100,9 +101,10 @@ int main(int argc, char *argv[])
         // -----------------
         if(spawnObj){
             spawnObj = false;
-            Object newObj = Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
-            objs.push_back(newObj);
-            pfRegistry.add(&newObj, &mainGravity);
+            Object *newObj = new Object(square, glm::vec2(cursorXPos*SCRADJUST,-cursorYPos*SCRADJUST),DEFAULTSIZE, glm::vec3(1.0f,1.0f,0.0f), glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f));
+            objs.push_back(*newObj);
+            std::cout << &newObj->particle << std::endl << std::endl;
+            pfRegistry.add(&newObj->particle, &mainGravity);
         }
 
         std::vector<uint> indicesToRemove;
@@ -130,23 +132,12 @@ int main(int argc, char *argv[])
             objs.erase(objs.begin() + *it); // Erase objects from the vector
         }
         
-        
+        pfRegistry.updateForces(deltaTime);
         for (auto it = objs.begin(); it != objs.end(); ++it) {
             if(!(*it).IsLocked()){
-                
-                std::cout << "Object position: " << (*it).position.x << ", " << (*it).position.y << std::endl;
-                std::cout << "Object velocity: " << (*it).velocity.x << ", " << (*it).velocity.y << std::endl;
-
-                // Apply gravity force manually for debugging
-                //glm::vec2 gravityForce = mainGravity.getGravity() * (*it).getMass();
-                std::cout << "Gravity force: " << (*it).forceAccum.x << ", " << (*it).forceAccum.y << std::endl;
-                pfRegistry.updateForces(deltaTime);
+                std::cout << &(*it).particle << " B"<<std::endl;
                 // Integrate object motion
-                (*it).integrate(deltaTime);
-
-                // Print updated object information
-                std::cout << "Object new position: " << (*it).position.x << ", " << (*it).position.y << std::endl;
-                std::cout << "Object new velocity: " << (*it).velocity.x << ", " << (*it).velocity.y << std::endl;
+                (*it).particle.integrate(deltaTime);
             }
             (*it).Draw();
         }

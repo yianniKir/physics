@@ -9,6 +9,8 @@ void ParticleForceRegistry::updateForces(float duration){
 }
 
 void ParticleGravity::updateForce(Particle* particle, float duration) {
+    std::cout << particle << " A"<<std::endl;
+    std::cout << particle->mass << std::endl;
     particle->addForce(gravity * particle->mass);
 }
 
@@ -17,6 +19,7 @@ void ParticleForceRegistry::add(Particle* particle, ParticleForceGenerator *fg)
     ParticleForceRegistration registration;
     registration.particle = particle;
     registration.fg = fg;
+    //std::cout << particle << " : "<< fg << std::endl;
     registrations.push_back(registration);
 }
 

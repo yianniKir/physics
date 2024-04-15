@@ -1,7 +1,7 @@
 #include "object.h"
 
 void Object::Draw(){
-    sprite.drawSprite(posNDC(), size, rotation, color);
+    sprite.drawSprite(particle.posNDC(), size, rotation, color);
 }
 
 void Object::SetDestroyable(bool b){
